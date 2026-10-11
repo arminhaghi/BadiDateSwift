@@ -75,6 +75,11 @@ extension BadiDate {
         underlined(BadiLocaleData.item(\.month, day, language: language), underline)
     }
 
+    /// The name of the day of the month translated into `language`, e.g. "Splendour".
+    public func translatedDayName(language: String = "en") -> String {
+        BadiLocaleData.item(\.monthL, day, language: language)
+    }
+
     /// The transliterated name of the weekday, e.g. "Jalál".
     public func weekdayName(language: String = "en") -> String {
         BadiLocaleData.item(\.weekday, weekday, language: language)
