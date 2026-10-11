@@ -9,7 +9,7 @@ the same answers. It has no dependencies beyond Foundation.
 ## Installation
 
 ```swift
-.package(url: "https://github.com/arminhaghi/BadiDateSwift.git", from: "0.1.0")
+.package(url: "https://github.com/arminhaghi/BadiDateSwift.git", from: "0.2.0")
 ```
 
 Requires Swift 6. Supports iOS 13, macOS 10.15, watchOS 6, tvOS 13 and visionOS 1 or later.
@@ -29,6 +29,8 @@ date.holyDay         // .nawRuz
 date.isWorkSuspended // true
 date.gregorianDate   // 2026-03-21
 date.format()        // "1 Bahá (Splendour) 183 B.E."
+date.nextFeast       // 1 Jalál 183
+date.nextHolyDay     // First Day of Riḍván
 date.format("d MM y", language: "fa")
 ```
 
@@ -49,6 +51,7 @@ now.end                  // sunset that ends it
 now.sunrise              // useful during the Fast
 now.holyDayCommemoration // e.g. solar noon for the Martyrdom of the Báb
 now.nextDay              // tomorrow, with its own times
+now.sunPosition()        // how far through the night or the daytime it is
 ```
 
 `now.end` is the moment to schedule a widget or complication refresh for.

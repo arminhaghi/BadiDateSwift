@@ -87,6 +87,23 @@ import Testing
         #expect(after == local.nextDay)
     }
 
+    @Test func sunPosition() throws {
+        let newYork = TimeZone(identifier: "America/New_York")!
+        let day = try BadiDate(gregorianYear: 2026, month: 10, day: 11)
+        let local = LocalBadiDate(day, latitude: 40.7128, longitude: -74.006, timeZone: newYork)
+        let night = local.sunrise.timeIntervalSince(local.start)
+        let daytime = local.end.timeIntervalSince(local.sunrise)
+
+        #expect(local.sunPosition(at: local.start) == SunPosition(isDaytime: false, fraction: 0))
+        #expect(local.sunPosition(at: local.start + night / 4) == SunPosition(isDaytime: false, fraction: 0.25))
+        #expect(local.sunPosition(at: local.sunrise) == SunPosition(isDaytime: true, fraction: 0))
+        #expect(local.sunPosition(at: local.sunrise + daytime / 2) == SunPosition(isDaytime: true, fraction: 0.5))
+        #expect(local.sunPosition(at: local.end) == SunPosition(isDaytime: true, fraction: 1))
+        // Outside the day the position stays at its ends.
+        #expect(local.sunPosition(at: local.start - 3600) == SunPosition(isDaytime: false, fraction: 0))
+        #expect(local.sunPosition(at: local.end + 3600) == SunPosition(isDaytime: true, fraction: 1))
+    }
+
     @Test func eveningBeforeTheFirstDayBelongsToIt() throws {
         let utc = TimeZone(identifier: "UTC")!
         let evening = GregorianDate(year: 1844, month: 3, day: 20)!.startOfDay(in: utc) + 23 * 3600

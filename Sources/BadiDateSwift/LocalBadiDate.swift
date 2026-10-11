@@ -1,5 +1,13 @@
 import Foundation
 
+/// How far the sun is through the night or the daytime of a Badí‘ day.
+public struct SunPosition: Hashable, Sendable {
+    /// `false` from sunset to sunrise, `true` from sunrise to sunset.
+    public let isDaytime: Bool
+    /// From 0 at the start of the night or daytime to 1 at its end.
+    public let fraction: Double
+}
+
 /// A Badí‘ date at a particular place, with the moments it starts and ends there.
 ///
 /// The Badí‘ day runs from sunset to sunset, so which date it is depends on where you are. In a few high-latitude
@@ -148,6 +156,16 @@ public struct LocalBadiDate: Hashable, Sendable {
         default:
             holyDayCommemoration = nil
         }
+    }
+
+    /// Where the sun is on its way through this Badí‘ day at `date`: in the night between `start` and `sunrise`,
+    /// or in the daytime between `sunrise` and `end`. Moments outside the day are clamped to its ends.
+    public func sunPosition(at date: Date = Date()) -> SunPosition {
+        let isDaytime = date >= sunrise
+        let (from, to) = isDaytime ? (sunrise, end) : (start, sunrise)
+        let length = to.timeIntervalSince(from)
+        let fraction = length > 0 ? date.timeIntervalSince(from) / length : 0
+        return SunPosition(isDaytime: isDaytime, fraction: min(max(fraction, 0), 1))
     }
 
     public var nextDay: LocalBadiDate? {
