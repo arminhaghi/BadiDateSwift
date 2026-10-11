@@ -1,0 +1,11 @@
+{
+    "name": "badidateswift-scripts",
+    "private": true,
+    "description": "Generates BadiDateSwift's data files and test fixtures from badiDate.",
+    "type": "module",
+    "dependencies": {
+        "badidate": "3.1.1",
+        "luxon": "3.7.2",
+        "meeussunmoon": "3.1.0"
+    }
+}
