@@ -121,6 +121,27 @@ import Testing
         #expect(try BadiDate.holyDays(inYear: 183).map(\.holyDay) == HolyDay.allCases)
     }
 
+    @Test func nextFeast() throws {
+        #expect(try BadiDate(year: 183, month: 11, day: 15).nextFeast == BadiDate(year: 183, month: 12, day: 1))
+        #expect(try BadiDate(year: 183, month: 11, day: 15).nextFeast?.gregorianDate.description == "2026-10-16")
+        #expect(try BadiDate(year: 183, month: 12, day: 1).nextFeast == BadiDate(year: 183, month: 13, day: 1))
+        // Ayyám-i-Há has no Feast.
+        #expect(try BadiDate(year: 183, month: 18, day: 10).nextFeast == BadiDate(year: 183, month: 19, day: 1))
+        #expect(try BadiDate(year: 183, month: 20, day: 2).nextFeast == BadiDate(year: 183, month: 19, day: 1))
+        #expect(try BadiDate(year: 183, month: 19, day: 19).nextFeast == BadiDate(year: 184, month: 1, day: 1))
+        #expect(try BadiDate(year: 507, month: 19, day: 3).nextFeast == nil)
+    }
+
+    @Test func nextHolyDay() throws {
+        let birthOfTheBab = try BadiDate(year: 183, holyDay: .birthOfTheBab)
+        #expect(try BadiDate(year: 183, month: 11, day: 15).nextHolyDay == birthOfTheBab)
+        #expect(birthOfTheBab.gregorianDate.description == "2026-11-10")
+        #expect(birthOfTheBab.nextHolyDay?.holyDay == .birthOfBahaullah)
+        #expect(try BadiDate(year: 183, holyDay: .ascensionOfAbdulBaha).nextHolyDay == BadiDate(year: 184, holyDay: .nawRuz))
+        #expect(try BadiDate(year: 507, holyDay: .dayOfTheCovenant).nextHolyDay?.holyDay == .ascensionOfAbdulBaha)
+        #expect(try BadiDate(year: 507, holyDay: .ascensionOfAbdulBaha).nextHolyDay == nil)
+    }
+
     @Test func codableRoundTrip() throws {
         let date = try BadiDate(year: 183, month: 11, day: 16)
         let data = try JSONEncoder().encode(date)

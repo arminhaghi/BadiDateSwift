@@ -190,6 +190,25 @@ public struct BadiDate: Hashable, Comparable, Sendable {
         try? BadiDate(gregorianDate: gregorianDate.adding(days: -1))
     }
 
+    /// The next first day of a month after this date, when the Nineteen Day Feast is held, or `nil` past the end
+    /// of the valid range. Ayyám-i-Há has no Feast and is skipped.
+    public var nextFeast: BadiDate? {
+        guard let next = nextMonth else { return nil }
+        return next.isAyyamiHa ? next.nextMonth : next
+    }
+
+    /// The next Holy Day after this date, or `nil` past the end of the valid range. On a Holy Day this is the
+    /// following one.
+    public var nextHolyDay: BadiDate? {
+        for year in [year, year + 1] {
+            guard let holyDays = try? BadiDate.holyDays(inYear: year) else { return nil }
+            if let next = holyDays.first(where: { $0 > self }) {
+                return next
+            }
+        }
+        return nil
+    }
+
     /// The dates of all eleven Holy Days in `year`, in order.
     public static func holyDays(inYear year: Int) throws -> [BadiDate] {
         try HolyDay.allCases.map { try BadiDate(year: year, holyDay: $0) }
