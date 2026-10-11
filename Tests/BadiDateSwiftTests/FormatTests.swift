@@ -64,6 +64,7 @@ import Testing
         #expect(date.monthName(underline: .none) == "Sharaf")
         #expect(date.translatedMonthName() == "Honour")
         #expect(date.dayName(underline: .none) == "Mashíyyat")
+        #expect(date.translatedDayName() == "Will")
         #expect(date.weekdayName() == "Jamál")
         #expect(date.translatedWeekdayName(language: "de") == "Schönheit")
         #expect(date.yearInVahidName() == "Javáb")
