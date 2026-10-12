@@ -27,5 +27,6 @@ import BadiDateSwift
             try BadiDate(year: 183, holyDay: .martyrdomOfTheBab), latitude: 32.8191, longitude: 34.9983, timeZone: haifa
         )
         #expect(martyrdom.holyDayCommemoration == martyrdom.solarNoon)
+        #expect(martyrdom.sunPosition(at: martyrdom.sunrise) == SunPosition(isDaytime: true, fraction: 0))
     }
 }

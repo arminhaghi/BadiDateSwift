@@ -6,6 +6,11 @@ public struct SunPosition: Hashable, Sendable {
     public let isDaytime: Bool
     /// From 0 at the start of the night or daytime to 1 at its end.
     public let fraction: Double
+
+    public init(isDaytime: Bool, fraction: Double) {
+        self.isDaytime = isDaytime
+        self.fraction = fraction
+    }
 }
 
 /// A Badí‘ date at a particular place, with the moments it starts and ends there.
