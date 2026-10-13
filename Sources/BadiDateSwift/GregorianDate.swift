@@ -108,6 +108,13 @@ struct LocalClock {
         return calendar.date(from: components)!
     }
 
+    /// The full hour on the clock nearest to `date`, with a half hour going to the later one.
+    func nearestHour(to date: Date) -> Date {
+        let offset = Double(timeZone.secondsFromGMT(for: date))
+        let local = ((date.timeIntervalSince1970 + offset) / 3600).rounded() * 3600
+        return Date(timeIntervalSince1970: local - offset)
+    }
+
     /// Minutes east of UTC at `date`.
     func offset(at date: Date) -> Double {
         Double(timeZone.secondsFromGMT(for: date)) / 60

@@ -34,7 +34,7 @@ public struct LocalBadiDate: Hashable, Sendable {
     /// Sunset, when this Badí‘ date ends.
     public let end: Date
     /// The time at which the Holy Day is commemorated, for the Holy Days that have one: 3 p.m. on the first day of
-    /// Riḍván, two hours after sunset for the Declaration of the Báb, 3 a.m. for the Ascension of Bahá’u’lláh, noon
+    /// Riḍván, the hour nearest two hours after sunset for the Declaration of the Báb, 3 a.m. for the Ascension of Bahá’u’lláh, noon
     /// for the Martyrdom of the Báb and 1 a.m. for the Ascension of ‘Abdu’l-Bahá. The clock hours are in local
     /// standard time, so they fall an hour later on the clock while daylight saving time is in force.
     public let holyDayCommemoration: Date?
@@ -151,8 +151,9 @@ public struct LocalBadiDate: Hashable, Sendable {
             // 15:00 local standard time
             holyDayCommemoration = standardHour(15)
         case .declarationOfTheBab:
-            // Two hours after sunset. badiDate uses 2 hours 11 minutes; the guidance is "about two hours".
-            holyDayCommemoration = start + 2 * 3600
+            // Two hours after sunset, to the nearest hour on the clock: a 19:48 sunset gives 22:00. badiDate uses
+            // 2 hours 11 minutes to the minute; the guidance is "about two hours".
+            holyDayCommemoration = clock.nearestHour(to: start + 2 * 3600)
         case .ascensionOfBahaullah:
             // 03:00 local standard time
             holyDayCommemoration = standardHour(3)
