@@ -19,49 +19,14 @@ import Testing
         ))
     }
 
-    /// The commemoration time expected of this package, given badiDate's. They agree except on two Holy Days, where
-    /// this package follows the guidance more closely: the hour nearest two hours after sunset rather than 2 hours
-    /// 11 minutes for the Declaration of the Báb, and noon by the clock in standard time rather than solar noon for
-    /// the Martyrdom of the Báb.
+    /// The commemoration time expected of this package, given badiDate's. They agree except for the Martyrdom of the
+    /// Báb, where this package uses noon by the clock in standard time rather than solar noon.
     private static func commemoration(_ date: BadiDate, reference: Double?, in timeZone: TimeZone) -> Double? {
-        switch date.holyDay {
-        case .declarationOfTheBab:
-            // badiDate's time less its 11 minutes is two hours after sunset, which is then taken to the nearest hour
-            // of the local clock.
-            return reference.map { reference in
-                let offset = Double(timeZone.secondsFromGMT(for: Date(timeIntervalSince1970: reference)))
-                return ((reference - 11 * 60 + offset) / 3600).rounded() * 3600 - offset
-            }
-        case .martyrdomOfTheBab:
-            // Noon on the Gregorian day as if it were GMT, moved to where standard time reads noon in this zone.
-            let noon = date.gregorianDate.startOfDay(in: .gmt) + 12 * 3600
-            let standardOffset = Double(timeZone.secondsFromGMT(for: noon)) - timeZone.daylightSavingTimeOffset(for: noon)
-            return noon.timeIntervalSince1970 - standardOffset
-        default:
-            return reference
-        }
-    }
-
-    @Test func theDeclarationIsCommemoratedOnTheHourNearestTwoHoursAfterSunset() throws {
-        let places: [(String, Double, Double)] = [
-            ("America/Los_Angeles", 33.88, -117.57), ("Asia/Jerusalem", 32.8191, 34.9983), ("Asia/Kolkata", 28.61, 77.21),
-            ("Australia/Adelaide", -34.93, 138.6), ("Asia/Kathmandu", 27.72, 85.32),
-        ]
-        for (identifier, latitude, longitude) in places {
-            let timeZone = TimeZone(identifier: identifier)!
-            var calendar = Calendar(identifier: .gregorian)
-            calendar.timeZone = timeZone
-            for year in 172...200 {
-                let day = LocalBadiDate(
-                    try BadiDate(year: year, holyDay: .declarationOfTheBab),
-                    latitude: latitude, longitude: longitude, timeZone: timeZone, usesClockLocations: false
-                )
-                let commemoration = try #require(day.holyDayCommemoration)
-                let clock = calendar.dateComponents([.minute, .second], from: commemoration)
-                #expect(clock.minute == 0 && clock.second == 0, "\(identifier) \(year)")
-                #expect(abs(commemoration.timeIntervalSince(day.start + 2 * 3600)) <= 30 * 60, "\(identifier) \(year)")
-            }
-        }
+        guard date.holyDay == .martyrdomOfTheBab else { return reference }
+        // Noon on the Gregorian day as if it were GMT, moved to where standard time reads noon in this zone.
+        let noon = date.gregorianDate.startOfDay(in: .gmt) + 12 * 3600
+        let standardOffset = Double(timeZone.secondsFromGMT(for: noon)) - timeZone.daylightSavingTimeOffset(for: noon)
+        return noon.timeIntervalSince1970 - standardOffset
     }
 
     @Test func localTimesMatchReference() throws {

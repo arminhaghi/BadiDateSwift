@@ -83,9 +83,8 @@ combining low lines (the default), plain letters, and two HTML forms.
 - The `vv` token is correct for the 18th and 19th Váḥid.
 - `HolyDay.name(language:)` falls back from a regional code such as `fa-IR` to its base language.
 - An unmatched `{` in a format is output as is.
-- Two commemoration times follow the guidance more closely. The Declaration of the Báb is the hour on the clock
-  nearest to two hours after sunset, where badiDate uses 2 hours 11 minutes to the minute, and the Martyrdom of the
-  Báb is noon in local standard time, where badiDate uses solar noon.
+- The Martyrdom of the Báb is commemorated at noon in local standard time, where badiDate uses solar noon. The
+  guidance is "about noon", given by the clock like the other hours.
 
 ## How it is tested
 
