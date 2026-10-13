@@ -19,6 +19,24 @@ import Testing
         ))
     }
 
+    /// The commemoration time expected of this package, given badiDate's. They agree except on two Holy Days, where
+    /// this package follows the guidance more closely: two hours after sunset rather than 2 hours 11 minutes for the
+    /// Declaration of the Báb, and noon by the clock in standard time rather than solar noon for the Martyrdom of the
+    /// Báb.
+    private static func commemoration(_ date: BadiDate, reference: Double?, in timeZone: TimeZone) -> Double? {
+        switch date.holyDay {
+        case .declarationOfTheBab:
+            return reference.map { $0 - 11 * 60 }
+        case .martyrdomOfTheBab:
+            // Noon on the Gregorian day as if it were GMT, moved to where standard time reads noon in this zone.
+            let noon = date.gregorianDate.startOfDay(in: .gmt) + 12 * 3600
+            let standardOffset = Double(timeZone.secondsFromGMT(for: noon)) - timeZone.daylightSavingTimeOffset(for: noon)
+            return noon.timeIntervalSince1970 - standardOffset
+        default:
+            return reference
+        }
+    }
+
     @Test func localTimesMatchReference() throws {
         var mismatches = Mismatches()
         var id = ""
@@ -42,7 +60,11 @@ import Testing
             mismatches.check(local.sunrise.timeIntervalSince1970, Double(row[4])!, "\(context) sunrise")
             mismatches.check(local.solarNoon.timeIntervalSince1970, Double(row[5])!, "\(context) solar noon")
             mismatches.check(local.end.timeIntervalSince1970, Double(row[6])!, "\(context) end")
-            mismatches.check(local.holyDayCommemoration?.timeIntervalSince1970, Double(row[7]), "\(context) commemoration")
+            mismatches.check(
+                local.holyDayCommemoration?.timeIntervalSince1970,
+                Self.commemoration(badiDate, reference: Double(row[7]), in: location.timeZone),
+                "\(context) commemoration"
+            )
             mismatches.check(local.clockLocation?.rawValue ?? "-", String(row[8]), "\(context) clock location")
             checked += 1
         }

@@ -26,7 +26,8 @@ import BadiDateSwift
         let martyrdom = LocalBadiDate(
             try BadiDate(year: 183, holyDay: .martyrdomOfTheBab), latitude: 32.8191, longitude: 34.9983, timeZone: haifa
         )
-        #expect(martyrdom.holyDayCommemoration == martyrdom.solarNoon)
+        // Noon standard time in Haifa is 13:00 on the clock in July, which is 10:00 UTC.
+        #expect(martyrdom.holyDayCommemoration == Date(timeIntervalSince1970: 1_783_677_600))
         #expect(martyrdom.sunPosition(at: martyrdom.sunrise) == SunPosition(isDaytime: true, fraction: 0))
     }
 }
