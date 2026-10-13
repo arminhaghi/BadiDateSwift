@@ -49,7 +49,7 @@ now.badiDate             // the date in effect right now
 now.start                // sunset that began it
 now.end                  // sunset that ends it
 now.sunrise              // useful during the Fast
-now.holyDayCommemoration // e.g. solar noon for the Martyrdom of the Báb
+now.holyDayCommemoration // e.g. noon for the Martyrdom of the Báb
 now.nextDay              // tomorrow, with its own times
 now.sunPosition()        // how far through the night or the daytime it is
 ```
@@ -83,6 +83,8 @@ combining low lines (the default), plain letters, and two HTML forms.
 - The `vv` token is correct for the 18th and 19th Váḥid.
 - `HolyDay.name(language:)` falls back from a regional code such as `fa-IR` to its base language.
 - An unmatched `{` in a format is output as is.
+- The Martyrdom of the Báb is commemorated at noon in local standard time, where badiDate uses solar noon. The
+  guidance is "about noon", given by the clock like the other hours.
 
 ## How it is tested
 

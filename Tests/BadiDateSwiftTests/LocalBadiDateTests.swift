@@ -19,6 +19,16 @@ import Testing
         ))
     }
 
+    /// The commemoration time expected of this package, given badiDate's. They agree except for the Martyrdom of the
+    /// Báb, where this package uses noon by the clock in standard time rather than solar noon.
+    private static func commemoration(_ date: BadiDate, reference: Double?, in timeZone: TimeZone) -> Double? {
+        guard date.holyDay == .martyrdomOfTheBab else { return reference }
+        // Noon on the Gregorian day as if it were GMT, moved to where standard time reads noon in this zone.
+        let noon = date.gregorianDate.startOfDay(in: .gmt) + 12 * 3600
+        let standardOffset = Double(timeZone.secondsFromGMT(for: noon)) - timeZone.daylightSavingTimeOffset(for: noon)
+        return noon.timeIntervalSince1970 - standardOffset
+    }
+
     @Test func localTimesMatchReference() throws {
         var mismatches = Mismatches()
         var id = ""
@@ -42,7 +52,11 @@ import Testing
             mismatches.check(local.sunrise.timeIntervalSince1970, Double(row[4])!, "\(context) sunrise")
             mismatches.check(local.solarNoon.timeIntervalSince1970, Double(row[5])!, "\(context) solar noon")
             mismatches.check(local.end.timeIntervalSince1970, Double(row[6])!, "\(context) end")
-            mismatches.check(local.holyDayCommemoration?.timeIntervalSince1970, Double(row[7]), "\(context) commemoration")
+            mismatches.check(
+                local.holyDayCommemoration?.timeIntervalSince1970,
+                Self.commemoration(badiDate, reference: Double(row[7]), in: location.timeZone),
+                "\(context) commemoration"
+            )
             mismatches.check(local.clockLocation?.rawValue ?? "-", String(row[8]), "\(context) clock location")
             checked += 1
         }
