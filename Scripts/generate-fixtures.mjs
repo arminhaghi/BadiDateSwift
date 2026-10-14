@@ -210,8 +210,11 @@ const sampleDates = () => {
             for (const badiDate of dates) {
                 for (let format of formats) {
                     // badiDate crops by UTF-16 code unit, which splits letters from their combining marks in
-                    // Russian. The Swift port crops by character, so those tokens are tested separately.
-                    if (language === 'ru' && format) format = format.replace('|D|', '|').replace('|M|', '|');
+                    // Russian, and from the doubling marks in Persian and Arabic. The Swift port crops by character,
+                    // so those tokens are tested separately.
+                    if (['ru', 'fa', 'fa-IR', 'ar'].includes(language) && format) {
+                        format = format.replace('|D|', '|').replace('|M|', '|');
+                    }
                     // badiDate's 'vv' goes wrong for the 18th and 19th Váḥid; that case is tested separately.
                     if (format === 'vv' && badiDate.vahid >= 18) continue;
                     entries.push([

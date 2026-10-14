@@ -83,9 +83,10 @@ combining low lines (the default), plain letters, and two HTML forms.
 - The `vv` token is correct for the 18th and 19th Váḥid.
 - `HolyDay.name(language:)` falls back from a regional code such as `fa-IR` to its base language.
 - An unmatched `{` in a format is output as is.
-- The Persian month names are the Persian forms in Persian letters (مشیّت, ملک), where badiDate has the Arabic
-  forms with the article (المشية, الملك). The Arabic names keep two marks badiDate's data leaves out (المشيّة, أيّام
-  الهاء). Month names are also the names of the days of the month, so both change.
+- The Persian and Arabic locale data come from the `persian-corrections` branch of
+  [arminhaghi/badiDate](https://github.com/arminhaghi/badiDate/tree/persian-corrections), which corrects spellings in
+  badiDate 3.1.1: Persian month names in their Persian forms and letters (مشیّت, ملک), fixed Holy Day, weekday and
+  Váḥid names, and two marks restored in Arabic (المشيّة, أيّام الهاء). The corrections are meant for badiDate itself.
 - The Martyrdom of the Báb is commemorated at noon in local standard time, where badiDate uses solar noon. The
   guidance is "about noon", given by the clock like the other hours.
 
@@ -98,6 +99,9 @@ walk every day of the valid range for internal consistency.
 
 The local times in the fixtures depend on the time zone database, so they only use zones without recent rule
 changes. If a test fails after an operating system update, a changed time zone rule is the first thing to check.
+
+`format.json` and the locale data were generated from that branch, built locally; the rest of the fixtures and data
+come from badiDate 3.1.1 and are unchanged by it.
 
 To regenerate the fixtures, or the data files in `Sources/BadiDateSwift/Generated` after an upstream change:
 
