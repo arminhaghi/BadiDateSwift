@@ -12,7 +12,7 @@ import BadiDateSwift
         #expect(date.isWorkSuspended)
         #expect(date.gregorianDate.description == "2026-03-21")
         #expect(date.format() == "1 Bahá (Splendour) 183 B.E.")
-        #expect(date.format("d MM y", language: "fa") == "۱ البهاء ۱۸۳")
+        #expect(date.format("d MM y", language: "fa") == "۱ بهاء ۱۸۳")
         #expect(try BadiDate(year: 183, holyDay: .firstRidvan).gregorianDate.description == "2026-04-21")
     }
 

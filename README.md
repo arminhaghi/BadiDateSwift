@@ -83,6 +83,9 @@ combining low lines (the default), plain letters, and two HTML forms.
 - The `vv` token is correct for the 18th and 19th Váḥid.
 - `HolyDay.name(language:)` falls back from a regional code such as `fa-IR` to its base language.
 - An unmatched `{` in a format is output as is.
+- The Persian month names are the Persian forms in Persian letters (مشیّت, ملک), where badiDate has the Arabic
+  forms with the article (المشية, الملك). The Arabic names keep two marks badiDate's data leaves out (المشيّة, أيّام
+  الهاء). Month names are also the names of the days of the month, so both change.
 - The Martyrdom of the Báb is commemorated at noon in local standard time, where badiDate uses solar noon. The
   guidance is "about noon", given by the clock like the other hours.
 

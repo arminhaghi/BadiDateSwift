@@ -35,7 +35,12 @@ import Testing
 
     static let reference = try! JSONDecoder().decode(Reference.self, from: Data(contentsOf: Fixtures.url("format.json")))
 
+    /// Compared with badiDate's own output, so without this package's corrections to the Persian and Arabic month names.
     @Test func formattingMatchesReference() throws {
+        try BadiLocaleData.$appliesCorrections.withValue(false) { try formatting() }
+    }
+
+    private func formatting() throws {
         let styles: [String: UnderlineStyle] = ["diacritic": .diacritic, "none": .none, "u": .htmlTag, "css": .htmlStyle]
         var mismatches = Mismatches()
         #expect(Self.reference.entries.count > 5000)
@@ -89,5 +94,33 @@ import Testing
 
     @Test func unmatchedBraceIsLiteral() throws {
         #expect(try BadiDate(year: 183, month: 1, day: 1).format("{d} d {d") == "d 1 {1")
+    }
+
+    @Test func persianMonthNamesAreThePersianForms() throws {
+        let names = try (1...19).map { try BadiDate(year: 183, month: $0, day: 1).monthName(language: "fa") }
+        #expect(names == [
+            "بهاء", "جلال", "جمال", "عظمت", "نور", "رحمت", "کلمات", "کمال", "اسماء", "عزّت", "مشیّت", "علم", "قدرت", "قول",
+            "مسائل", "شرف", "سلطان", "ملک", "علاء",
+        ])
+        let ayyamiHa = try BadiDate(year: 183, month: BadiDate.ayyamiHa, day: 1)
+        #expect(ayyamiHa.monthName(language: "fa") == "ایّام ها")
+        #expect(ayyamiHa.monthName(language: "fa-IR") == "ایّام ها")
+        #expect(try BadiDate(year: 183, month: 3, day: 11).dayName(language: "fa") == "مشیّت")
+        #expect(try BadiDate(year: 183, month: 11, day: 1).translatedMonthName(language: "fa") == "مشیّت")
+        // No Arabic kaf or yeh is left in a Persian month name.
+        #expect(names.allSatisfy { !$0.contains("ك") && !$0.contains("ي") })
+    }
+
+    @Test func arabicMonthNamesKeepTheirMarks() throws {
+        #expect(try BadiDate(year: 183, month: 11, day: 1).monthName(language: "ar") == "المشيّة")
+        #expect(try BadiDate(year: 183, month: BadiDate.ayyamiHa, day: 1).monthName(language: "ar") == "أيّام الهاء")
+        #expect(try BadiDate(year: 183, month: 1, day: 1).monthName(language: "ar") == "البهاء")
+    }
+
+    @Test func otherLanguagesAreUntouched() throws {
+        let date = try BadiDate(year: 183, month: 11, day: 17)
+        let corrected = ["de", "en", "es", "fr", "ru"].map { date.format(language: $0) }
+        let upstream = BadiLocaleData.$appliesCorrections.withValue(false) { ["de", "en", "es", "fr", "ru"].map { date.format(language: $0) } }
+        #expect(corrected == upstream)
     }
 }

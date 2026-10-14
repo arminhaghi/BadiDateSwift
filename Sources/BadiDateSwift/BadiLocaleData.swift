@@ -18,20 +18,25 @@ struct BadiLocaleData: Sendable {
 
     static let fallbackLanguage = "en"
 
-    /// The languages to consult for `language`, most specific first.
-    static func chain(for language: String) -> [BadiLocaleData] {
+    /// The codes of the languages to consult for `language`, most specific first, keeping only those there is data for.
+    static func codes(for language: String) -> [String] {
         let code = language.lowercased().replacingOccurrences(of: "_", with: "-")
         var codes = [code]
         if let base = code.split(separator: "-").first, base != code {
             codes.append(String(base))
         }
         codes.append(fallbackLanguage)
-        return codes.compactMap { all[$0] }
+        return codes.filter { all[$0] != nil }
+    }
+
+    /// The languages to consult for `language`, most specific first.
+    static func chain(for language: String) -> [BadiLocaleData] {
+        codes(for: language).compactMap { all[$0] }
     }
 
     static func item(_ table: KeyPath<BadiLocaleData, [Int: String]>, _ index: Int, language: String) -> String {
-        for locale in chain(for: language) {
-            if let value = locale[keyPath: table][index] {
+        for code in codes(for: language) {
+            if let value = correction(code, table, index) ?? all[code]?[keyPath: table][index] {
                 return value
             }
         }
