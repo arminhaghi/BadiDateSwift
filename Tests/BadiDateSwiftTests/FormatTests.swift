@@ -85,9 +85,34 @@ import Testing
         #expect(try BadiDate(year: 183, month: 6, day: 4).format("M D", language: "ru") == "Рах\u{323} ‘Аз\u{323}а")
         #expect(try BadiDate(year: 183, month: 16, day: 4).format("M D", underline: .none) == "Sha ‘Aẓa")
         #expect(try BadiDate(year: 183, month: 16, day: 9).format("M D", underline: .htmlTag) == "<u>Sh</u>a Asm")
+        // A doubled letter keeps its mark in Persian and Arabic, where badiDate cuts it off.
+        #expect(try BadiDate(year: 183, month: 11, day: 10).format("M D", language: "fa") == "مشیّ عزّت")
+        #expect(try BadiDate(year: 183, month: BadiDate.ayyamiHa, day: 1).format("M", language: "ar") == "أيّا")
     }
 
     @Test func unmatchedBraceIsLiteral() throws {
         #expect(try BadiDate(year: 183, month: 1, day: 1).format("{d} d {d") == "d 1 {1")
+    }
+
+    @Test func persianMonthNamesAreThePersianForms() throws {
+        let names = try (1...19).map { try BadiDate(year: 183, month: $0, day: 1).monthName(language: "fa") }
+        #expect(names == [
+            "بهاء", "جلال", "جمال", "عظمت", "نور", "رحمت", "کلمات", "کمال", "اسماء", "عزّت", "مشیّت", "علم", "قدرت", "قول",
+            "مسائل", "شرف", "سلطان", "ملک", "علاء",
+        ])
+        let ayyamiHa = try BadiDate(year: 183, month: BadiDate.ayyamiHa, day: 1)
+        #expect(ayyamiHa.monthName(language: "fa") == "ایّام ها")
+        #expect(ayyamiHa.monthName(language: "fa-IR") == "ایّام ها")
+        #expect(try BadiDate(year: 183, month: 3, day: 11).dayName(language: "fa") == "مشیّت")
+        #expect(try BadiDate(year: 183, month: 11, day: 1).translatedMonthName(language: "fa") == "مشیّت")
+        // No Arabic kaf or yeh is left in a Persian month name.
+        #expect(names.allSatisfy { !$0.contains("ك") && !$0.contains("ي") })
+        #expect(HolyDay.birthOfBahaullah.name(language: "fa") == "تولّد حضرت بهاءالله")
+    }
+
+    @Test func arabicMonthNamesKeepTheirMarks() throws {
+        #expect(try BadiDate(year: 183, month: 11, day: 1).monthName(language: "ar") == "المشيّة")
+        #expect(try BadiDate(year: 183, month: BadiDate.ayyamiHa, day: 1).monthName(language: "ar") == "أيّام الهاء")
+        #expect(try BadiDate(year: 183, month: 1, day: 1).monthName(language: "ar") == "البهاء")
     }
 }
