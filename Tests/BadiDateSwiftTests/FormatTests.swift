@@ -101,8 +101,8 @@ import Testing
             "مسائل", "شرف", "سلطان", "ملک", "علاء",
         ])
         let ayyamiHa = try BadiDate(year: 183, month: BadiDate.ayyamiHa, day: 1)
-        #expect(ayyamiHa.monthName(language: "fa") == "ایّام ها")
-        #expect(ayyamiHa.monthName(language: "fa-IR") == "ایّام ها")
+        #expect(ayyamiHa.monthName(language: "fa") == "ایّام‌ها")
+        #expect(ayyamiHa.monthName(language: "fa-IR") == "ایّام‌ها")
         #expect(try BadiDate(year: 183, month: 3, day: 11).dayName(language: "fa") == "مشیّت")
         #expect(try BadiDate(year: 183, month: 11, day: 1).translatedMonthName(language: "fa") == "مشیّت")
         // No Arabic kaf or yeh is left in a Persian month name.
