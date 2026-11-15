@@ -9,7 +9,7 @@ the same answers. It has no dependencies beyond Foundation.
 ## Installation
 
 ```swift
-.package(url: "https://github.com/arminhaghi/BadiDateSwift.git", from: "0.2.0")
+.package(url: "https://github.com/arminhaghi/BadiDateSwift.git", from: "0.4.1")
 ```
 
 Requires Swift 6. Supports iOS 13, macOS 10.15, watchOS 6, tvOS 13 and visionOS 1 or later.
@@ -86,7 +86,8 @@ combining low lines (the default), plain letters, and two HTML forms.
 - The Persian and Arabic locale data come from the `persian-corrections` branch of
   [arminhaghi/badiDate](https://github.com/arminhaghi/badiDate/tree/persian-corrections), which corrects spellings in
   badiDate 3.1.1: Persian month names in their Persian forms and letters (مشیّت, ملک), fixed Holy Day, weekday and
-  Váḥid names, and two marks restored in Arabic (المشيّة, أيّام الهاء). The corrections are meant for badiDate itself.
+  Váḥid names, the Persian Ayyám-i-Há written with a zero-width non-joiner (ایّام‌ها), and two marks restored in
+  Arabic (المشيّة, أيّام الهاء). The corrections are meant for badiDate itself.
 - The Martyrdom of the Báb is commemorated at noon in local standard time, where badiDate uses solar noon. The
   guidance is "about noon", given by the clock like the other hours.
 
